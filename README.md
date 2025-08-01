@@ -1,6 +1,5 @@
 # MetroArt
 Proyecto final de Algoritmos y Programación 2425-I
-- Alirio Ugarte Pelayo
 - Nicole Ugarte Pelayo
 - Amelia Vergara
 
