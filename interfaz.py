@@ -47,7 +47,7 @@ class Interfaz:
         print("---")
         print("Departamentos disponibles:")
         for i, depto in enumerate(self.manejador.departamentos_disponibles, 1):
-            print(f"{i}. ID: {depto['id']} - {depto['nombre']}")
+            print(f"{i}. {depto['nombre']}")
         while True:
             try:
                 seleccion = int(input("Seleccione el número del departamento: "))
