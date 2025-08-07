@@ -42,7 +42,7 @@ class ManejadorDatos:
         self.nacionalidades_disponibles = []
         with open(archivo, "r") as f:
             lector = csv.reader(f)
-            for fila in lector[1:]:
+            for fila in list(lector)[1:]:
                 self.nacionalidades_disponibles.append(fila[0])
     
     def obtener_obras_por_departamento(self, id_departamento):
