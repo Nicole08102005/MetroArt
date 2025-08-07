@@ -17,9 +17,8 @@ class ManejadorDatos:
         # Guardar la dirección URL de la API
         self.API = "https://collectionapi.metmuseum.org/public/collection/v1"
         # Inicializar listas para guardar los datos
-        self.obras, self.departamentos, self.nacionalidades = [], [], []
+        self.obras, self.departamentos_disponibles, self.nacionalidades_disponibles = [], [], []
         # Obtener los datos de la API y las nacionalidades
-        self.obtener_obras()
         self.obtener_departamentos()
         self.obtener_nacionalidades()
         
@@ -59,8 +58,42 @@ class ManejadorDatos:
                 obra = self.obtener_obra(id_obj)
                 if obra:
                     self.obras.append(obra)
+            return True
         except requests.exceptions.RequestException as e:
             print(f"Error al obtener obras por departamento: {e}")
+            return False
+    
+    def buscar_obras_por_nacionalidad(self, nacionalidad, max_obras=20):
+        """
+        Busca obras de arte por nacionalidad del artista directamente en la API
+        
+        Args:
+            nacionalidad (str): Nacionalidad del artista a buscar
+            max_obras (int): Número máximo de obras a devolver (por rendimiento)
+        
+        Returns:
+            bool: True si se encontraron obras, False si hubo error
+        """
+        try:
+            # Primero obtenemos todos los IDs de obras disponibles
+            respuesta = requests.get(f"{self.API}/objects")
+            respuesta.raise_for_status()
+            todos_ids = respuesta.json().get('objectIDs', [])
+            self.obras = []
+            obras_encontradas = 0
+            # Iteramos por los IDs hasta encontrar suficientes obras o terminar la lista
+            for obj_id in todos_ids:
+                if obras_encontradas >= max_obras:
+                    break
+                # Obtenemos los detalles de cada obra
+                obra = self.obtener_obra(obj_id)
+                if obra and obra.nacionalidad.lower() == nacionalidad.lower():
+                    self.obras.append(obra)
+                    obras_encontradas += 1
+            return len(self.obras) > 0
+        except requests.exceptions.RequestException as e:
+            print(f"Error al buscar obras por nacionalidad: {e}")
+            return False
     
     def obtener_obra(self, id_objeto):
         """
@@ -81,8 +114,9 @@ class ManejadorDatos:
                 'clasificacion': datos.get('classification', 'Desconocido'),
                 'fecha_obra': datos.get('objectDate', 'Desconocido'),
                 'nombre_departamento': datos.get('department', 'Desconocido'),
-                'url_imagen': datos.get('primaryImage', datos.get('additionalImages', [''])[0])
+                'url_imagen': datos.get('primaryImage', '')
             }
+            # Guardar la obra en una instancia de la clase Obra
             return Obra(datos_obra)
         except requests.exceptions.RequestException as e:
             print(f"Error al obtener detalles de la obra {id_objeto}: {e}")
