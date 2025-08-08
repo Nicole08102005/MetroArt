@@ -19,23 +19,21 @@ class Obra:
         self.departamento = datos_obra.get("nombre_departamento", 'Desconocido')
         self.url_imagen = datos_obra.get("url_imagen", '')
     
-    def info_basica(self):
+    def mostrar_info_basica(self):
         """
-        Devuelve información básica de la obra para listados
+        Imprime información básica de la obra para listados
         """
-        return f"ID: {self.id} - Título: {self.titulo} - Artista: {self.artista} - Creación {self.fecha_creacion}"
+        print(f"ID: {self.id} - Título: {self.titulo} - Artista: {self.artista}")
     
-    def info_completa(self):
+    def mostrar_info_completa(self):
         """
-        Devuelve información completa de la obra
+        Imprime información completa de la obra
         """
-        return (
-            f"Título: {self.titulo}"
-            f"Artista: {self.artista}"
-            f"Nacionalidad: {self.nacionalidad}"
-            f"Fechas del artista: {self.año_nacimiento}-{self.año_muerte}"
-            f"Tipo: {self.clasificacion}"
-            f"Año de creación: {self.fecha_creacion}"
-            f"Departamento: {self.departamento}"
-            f"ID de la obra: {self.id}"
-        )
+        print(f"Título: {self.titulo}")
+        print(f"Artista: {self.artista}")
+        print(f"Nacionalidad: {self.nacionalidad}")
+        print(f"Fechas del artista: {self.año_nacimiento}-{self.año_muerte}")
+        print(f"Tipo: {self.clasificacion}")
+        print(f"Año de creación: {self.fecha_creacion}")
+        print(f"Departamento: {self.departamento}")
+        print(f"ID de la obra: {self.id}")
