@@ -167,6 +167,8 @@ class Interfaz:
                             if mostrar == 's':
                                 self.manejador.mostrar_imagen_obra(id_obra)
                                 break
+                            elif mostrar == 'n':
+                                break
                             else:
                                 print("Opción no válida. Intente de nuevo.")
                     else:
