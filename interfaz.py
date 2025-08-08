@@ -86,7 +86,7 @@ class Interfaz:
                 # Pedir el número de obras a buscar por nacionalidad
                 while True:
                     try:
-                        max_obras = int(input("Ingrese el número de obras del catálogo en las que buscar: "))
+                        max_obras = int(input("Ingrese el número de obras del catálogo en las que buscar esta nacionalidad: "))
                     except ValueError:
                         print("Ingreso inválido. Por favor intente de nuevo.")
                         continue
@@ -116,7 +116,7 @@ class Interfaz:
             # Pedir el número de obras a buscar por nacionalidad
             while True:
                 try:
-                    max_obras = int(input("Ingrese el número de obras del catálogo en las que buscar: "))
+                    max_obras = int(input("Ingrese el número de obras del catálogo en las que buscar este nombre: "))
                 except ValueError:
                     print("Ingreso inválido. Por favor intente de nuevo.")
                     continue
