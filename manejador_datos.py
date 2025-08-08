@@ -18,9 +18,6 @@ class ManejadorDatos:
         self.API = "https://collectionapi.metmuseum.org/public/collection/v1"
         # Inicializar listas para guardar los datos
         self.obras, self.departamentos_disponibles, self.nacionalidades_disponibles = [], [], []
-        # Obtener los datos de la API y las nacionalidades
-        self.obtener_departamentos()
-        self.obtener_nacionalidades()
         
     def obtener_departamentos(self):
         """
@@ -57,6 +54,7 @@ class ManejadorDatos:
         Return:
             bool: True si se encuentran obras; False de lo contrario
         """
+        self.obras = []
         try:
             # Obtener IDs de obras en el departamento
             respuesta = requests.get(f"{self.API}/objects?departmentIds={id_departamento}")
@@ -72,7 +70,7 @@ class ManejadorDatos:
             print(f"Error al obtener obras por departamento: {e}")
             return False
     
-    def buscar_obras_por_nacionalidad(self, nacionalidad, max_obras=20):
+    def obtener_obras_por_nacionalidad(self, nacionalidad, max_obras=200):
         """
         Busca obras de arte por nacionalidad del artista directamente en la API
         Argumento:
@@ -81,17 +79,16 @@ class ManejadorDatos:
         Return:
             bool: True si se encontraron obras, False si hubo error
         """
+        self.obras = []
         try:
             # Primero obtenemos todos los IDs de obras disponibles
             respuesta = requests.get(f"{self.API}/objects")
             respuesta.raise_for_status()
-            todos_ids = respuesta.json().get('objectIDs', [])
+            todos_ids = respuesta.json().get("objectIDs", [])[:max_obras]
             self.obras = []
             obras_encontradas = 0
             # Iteramos por los IDs hasta encontrar suficientes obras o terminar la lista
             for obj_id in todos_ids:
-                if obras_encontradas >= max_obras:
-                    break
                 # Obtenemos los detalles de cada obra
                 obra = self.obtener_obra(obj_id)
                 if obra and obra.nacionalidad.lower() == nacionalidad.lower():
@@ -100,6 +97,35 @@ class ManejadorDatos:
             return len(self.obras) > 0
         except requests.exceptions.RequestException as e:
             print(f"Error al buscar obras por nacionalidad: {e}")
+            return False
+        
+    def obtener_obras_por_artista(self, artista, max_obras=200):
+        """
+        Busca obras de arte por nacionalidad del artista directamente en la API
+        Argumento:
+            artista (str): Nombre del artista a buscar
+            max_obras (int): Número máximo de obras a buscar
+        Return:
+            bool: True si se encontraron obras, False si no
+        """
+        self.obras = []
+        try:
+            # Primero obtenemos todos los IDs de obras disponibles
+            respuesta = requests.get(f"{self.API}/objects")
+            respuesta.raise_for_status()
+            todos_ids = respuesta.json().get("objectIDs", [])[:max_obras]
+            self.obras = []
+            obras_encontradas = 0
+            # Iteramos por los IDs hasta encontrar suficientes obras o terminar la lista
+            for obj_id in todos_ids:
+                # Obtenemos los detalles de cada obra
+                obra = self.obtener_obra(obj_id)
+                if obra and artista.lower() in obra.artista.lower():
+                    self.obras.append(obra)
+                    obras_encontradas += 1
+            return len(self.obras) > 0
+        except requests.exceptions.RequestException as e:
+            print(f"Error al buscar obras por artista: {e}")
             return False
     
     def obtener_obra(self, id_objeto):
@@ -112,7 +138,7 @@ class ManejadorDatos:
             respuesta = requests.get(f"{self.API}/objects/{id_objeto}")
             respuesta.raise_for_status()
             datos = respuesta.json()
-            # Devolver datos guardados en una instancia de la clase Obra
+            # Guardar datos en una instancia de la clase Obra y retornar
             return Obra({
                 'id_obra': id_objeto,
                 'titulo': datos.get('title', 'Sin título'),
