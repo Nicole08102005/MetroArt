@@ -3,10 +3,13 @@ Proyecto final de Algoritmos y Programación 2425-I
 - Nicole Ugarte Pelayo
 - Amelia Vergara
 
+El presente código se encuentra en este enlace: [https://github.com/Nicole08102005/MetroArt](https://github.com/Nicole08102005/MetroArt).
+
 ---
 **NOTA:** Puede ocurrir que al correr el código se obtenga el error `403 Client Error: Forbidden for url: https://collectionapi.metmuseum.org/public/collection/v1/objects/`.
 Esto ocurre por problemas de acceso a la base de datos del MoMA. Si se obtiene, por favor intente correr el código nuevamente.
 
+---
 ## Descripción general
 El presente es un paquete de python el cual permite visualizar datos sobre obras de arte
 contenidas en el Museo Metropolitano de Arte ("MoMA", por sus siglas en inglés). A continuación se describen sus módulos.
