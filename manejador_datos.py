@@ -37,6 +37,11 @@ class ManejadorDatos:
             print(f"Error al obtener departamentos: {e}")
 
     def obtener_nacionalidades(self, archivo="./nacionalidades.csv"):
+        """
+        Procedimiento que carga las nacionalidades disponibles de un archivo
+        Argumentos:
+            archivo (str): Dirección del archivo CSV que contiene las nacionalidades
+        """
         # Cargar las nacionalidades disponibles desde el archivo
         self.nacionalidades_disponibles = []
         with open(archivo, "r") as f:
@@ -47,6 +52,10 @@ class ManejadorDatos:
     def obtener_obras_por_departamento(self, id_departamento):
         """
         Obtiene obras de arte por departamento
+        Argumentos:
+            id_departamento (int): Identificador del departamento a buscar
+        Return:
+            bool: True si se encuentran obras; False de lo contrario
         """
         try:
             # Obtener IDs de obras en el departamento
@@ -66,12 +75,10 @@ class ManejadorDatos:
     def buscar_obras_por_nacionalidad(self, nacionalidad, max_obras=20):
         """
         Busca obras de arte por nacionalidad del artista directamente en la API
-        
-        Args:
+        Argumento:
             nacionalidad (str): Nacionalidad del artista a buscar
             max_obras (int): Número máximo de obras a devolver (por rendimiento)
-        
-        Returns:
+        Return:
             bool: True si se encontraron obras, False si hubo error
         """
         try:
@@ -98,13 +105,15 @@ class ManejadorDatos:
     def obtener_obra(self, id_objeto):
         """
         Obtiene detalles de una obra específica
+        Argumentos:
+            id_objeto (int): Identificación de la obra cuyos detalles se quieren mostrar
         """
         try:
             respuesta = requests.get(f"{self.API}/objects/{id_objeto}")
             respuesta.raise_for_status()
             datos = respuesta.json()
-            # Preparar diccionario con los datos de la obra
-            datos_obra = {
+            # Devolver datos guardados en una instancia de la clase Obra
+            return Obra({
                 'id_obra': id_objeto,
                 'titulo': datos.get('title', 'Sin título'),
                 'nombre_artista': datos.get('artistDisplayName', 'Desconocido'),
@@ -115,9 +124,7 @@ class ManejadorDatos:
                 'fecha_obra': datos.get('objectDate', 'Desconocido'),
                 'nombre_departamento': datos.get('department', 'Desconocido'),
                 'url_imagen': datos.get('primaryImage', '')
-            }
-            # Guardar la obra en una instancia de la clase Obra
-            return Obra(datos_obra)
+            })
         except requests.exceptions.RequestException as e:
             print(f"Error al obtener detalles de la obra {id_objeto}: {e}")
             return None
@@ -125,8 +132,8 @@ class ManejadorDatos:
     def mostrar_imagen_obra(self, id_obra):
         """
         Muestra la imagen de una obra específica
-        Args:
-        id_obra (int): ID de la obra a buscar
+        Argumentos:
+            id_obra (int): ID de la obra a buscar
         """
         obra = next((obra for obra in self.obras if obra.id == id_obra), None)
         if not obra or not obra.url_imagen:
